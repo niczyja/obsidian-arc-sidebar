@@ -1,5 +1,5 @@
 
-import { App, Plugin, PluginSettingTab, Setting, Modal, FileSystemAdapter, normalizePath, Notice } from 'obsidian';
+import { App, Plugin, PluginSettingTab, Setting, Modal, FileSystemAdapter, normalizePath, TFolder } from 'obsidian';
 import { homedir } from 'os';
 import { normalize, resolve } from 'path';
 import { access, constants } from 'fs/promises';
@@ -9,18 +9,33 @@ interface ArcSidebarSettings {
 }
 
 const DEFAULT_SETTINGS: ArcSidebarSettings = {
-	jsonPath: homedir() + '/Library/Application Support/Arc/StorableSidebar.json'
+	jsonPath: homedir() + '/Library/Application Support/Arc/StorableSidebar.json',
+	folderName: 'Arc Sidebar'
 }
 
 export default class ArcSidebar extends Plugin {
 	settings: ArcSidebarSettings;
+	folder: TFolder;
 
 	async onload() {
+
+
+//<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-drafting-compass"><circle cx="12" cy="5" r="2"/><path d="m3 21 8.02-14.26"/><path d="m12.99 6.74 1.93 3.44"/><path d="M19 12c-3.87 4-10.13 4-14 0"/><path d="m21 21-2.16-3.84"/></svg>
+
 		await this.loadSettings();
 		this.addSettingTab(new ArcSidebarSettingsTab(this.app, this));
 
 		const statusBarItemEl = this.addStatusBarItem();
  		statusBarItemEl.setText('Arc Sidebar loaded');
+
+ 		this.addRibbonIcon("dice", "Print leaf types", () => {
+ 			console.log(this.app.workspace.leftRibbon, this.app.workspace.rightRibbon);
+
+
+ 			// this.app.workspace.iterateAllLeaves((leaf) => {
+ 			// 	console.log(leaf.getViewState().type);
+ 			// });
+ 		});
 	}
 
 	async onunload() {
@@ -58,7 +73,6 @@ class ArcSidebarSettingsTab extends PluginSettingTab {
 		this.containerEl.empty();
 
 		const jsonExists = await this.plugin.validateJsonPath();
-		new Notice(jsonExists ? 'So far, so good! JSON file found.' : 'Mayday! Could not find JSON file.');
 
 		new Setting(this.containerEl)
 			.setName('Sidebar JSON file location')
@@ -80,6 +94,23 @@ class ArcSidebarSettingsTab extends PluginSettingTab {
 					await this.save();
 				}))
 			.descEl.setAttribute('style', jsonExists ? 'color: var(--color-green);' : 'color: var(--color-red);');
+
+		new Setting(this.containerEl)
+			.setName('Default folder name')
+			.setDesc('Set name of the folder containing Arc Sidebar structure')
+			.addText(ct => ct
+				.setValue(this.plugin.settings.folderName)
+				.onChange(async (value) => {
+					this.plugin.settings.folderName = value;
+					await this.plugin.saveSettings();
+				}))
+			.addExtraButton(cb => cb
+				.setIcon('reset')
+				.setTooltip('Reset to default')
+				.onClick(async () => {
+					this.plugin.settings.folderName = DEFAULT_SETTINGS.folderName;
+					await this.save();
+				}));
 	}
 
 	async save(): void {
@@ -103,20 +134,19 @@ class TextInputModal extends Modal {
 	display(): void {
 		this.titleEl.setText(this.name);
 		new Setting(this.contentEl)
-			.addText((ct) => { ct
+			.addText(ct => ct
 				.setValue(this.value)
-				.onChange((value) => {
-					this.value = value;
-				})
-				.inputEl.setAttribute('size', 60);
-			})
-			.addButton((cb) => { cb
+				.onChange(value =>
+					this.value = value
+				)
+				.inputEl.setAttribute('size', 60)
+			)
+			.addButton(cb => cb
 				.setButtonText('Save')
 				.onClick(async () => {
 					this.save(this.value);
 					this.close();
-				});
-			});
+				}));
 	}
 
 	onOpen() {
