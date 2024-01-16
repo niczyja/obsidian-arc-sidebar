@@ -24,6 +24,21 @@ export default class ArcSidebar extends Plugin {
 			this.initView(VIEW_TYPE_OUTLINE, workspace.getLeftLeaf(false));
 			this.initView(VIEW_TYPE_NOTE, workspace.getRightLeaf(false));
 		});
+
+		this.addCommand({
+			id: 'open-arc-sidebar-outline',
+			name: 'Open outline view',
+			callback: async () => {
+				await this.revealOutlineView();
+			}
+		});
+		this.addCommand({
+			id: 'open-arc-sidebar-note',
+			name: 'Open note view',
+			callback: async () => {
+				await this.revealNoteView();
+			}
+		});
 	}
 
 	async onunload(): Promise<void> {
