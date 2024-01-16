@@ -42,10 +42,6 @@ export default class ArcSidebar extends Plugin {
 	}
 
 	async onunload(): Promise<void> {
-		const { workspace } = this.app;
-
-		workspace.detachLeavesOfType(VIEW_TYPE_OUTLINE);
-		workspace.detachLeavesOfType(VIEW_TYPE_NOTE);
 	}
 
 	async loadSettings(): Promise<void> {
