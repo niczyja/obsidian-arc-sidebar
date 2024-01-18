@@ -1,6 +1,6 @@
 
-import ArcSidebar from "main";
-import { ItemView, WorkspaceLeaf } from "obsidian";
+import ArcSidebar from 'main';
+import { ItemView, WorkspaceLeaf } from 'obsidian';
 
 export const VIEW_TYPE_NOTE = 'arc-sidebar-note-view';
 
@@ -17,7 +17,7 @@ export class ArcSidebarNoteView extends ItemView {
 	}
 
 	getDisplayText(): string {
-	    return "Arc Sidebar Note";
+	    return 'Arc Sidebar Note';
 	}
 
 	getIcon(): string {
@@ -27,7 +27,7 @@ export class ArcSidebarNoteView extends ItemView {
 	 protected async onOpen(): Promise<void> {
 	 	const container = this.containerEl.children[1];
 	 	container.empty();
-	 	container.createEl("h4", { text: "Arc Sidebar Note" });
+	 	container.createEl('h4', { text: 'Arc Sidebar Note' });
 	 }
 
 	 protected async onClose(): Promise<void> {

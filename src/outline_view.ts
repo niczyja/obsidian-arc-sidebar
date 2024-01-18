@@ -1,6 +1,6 @@
 
-import ArcSidebar from "main";
-import { ItemView, WorkspaceLeaf } from "obsidian";
+import ArcSidebar from 'main';
+import { ItemView, WorkspaceLeaf } from 'obsidian';
 
 export const VIEW_TYPE_OUTLINE = 'arc-sidebar-outline-view';
 
@@ -17,7 +17,7 @@ export class ArcSidebarOutlineView extends ItemView {
 	}
 
 	getDisplayText(): string {
-	    return "Arc Sidebar Outline";
+	    return 'Arc Sidebar Outline';
 	}
 
 	getIcon(): string {
@@ -27,7 +27,7 @@ export class ArcSidebarOutlineView extends ItemView {
 	 protected async onOpen(): Promise<void> {
 	 	const container = this.containerEl.children[1];
 	 	container.empty();
-	 	container.createEl("h4", { text: "Arc Sidebar Outline" });
+	 	container.createEl('h4', { text: 'Arc Sidebar Outline' });
 	 }
 
 	 protected async onClose(): Promise<void> {
