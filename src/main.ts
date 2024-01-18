@@ -3,8 +3,7 @@ import { addIcon, Plugin, WorkspaceLeaf } from 'obsidian';
 import { ArcSidebarSettings, ArcSidebarSettingsTab, DEFAULT_SETTINGS } from 'settings';
 import { ArcSidebarOutlineView, VIEW_TYPE_OUTLINE } from 'outline_view';
 import { ArcSidebarNoteView, VIEW_TYPE_NOTE } from 'note_view';
-import { access, constants } from 'fs/promises';
-import { normalize } from 'path';
+import { readJson } from 'parser';
 
 export default class ArcSidebar extends Plugin {
 	settings: ArcSidebarSettings;
@@ -16,6 +15,7 @@ export default class ArcSidebar extends Plugin {
 
 		await this.loadSettings();
 		this.addSettingTab(new ArcSidebarSettingsTab(this.app, this));
+		await readJson(this.settings.jsonPath);
 
 		this.registerView(VIEW_TYPE_OUTLINE, (leaf) => new ArcSidebarOutlineView(this, leaf));
 		this.registerView(VIEW_TYPE_NOTE, (leaf) => new ArcSidebarNoteView(this, leaf));
@@ -23,6 +23,10 @@ export default class ArcSidebar extends Plugin {
 		workspace.onLayoutReady(() => {
 			this.initView(VIEW_TYPE_OUTLINE, workspace.getLeftLeaf(false));
 			this.initView(VIEW_TYPE_NOTE, workspace.getRightLeaf(false));
+
+			workspace.rootSplit.win.addEventListener('focus', async (_event) => {
+				await readJson(this.settings.jsonPath);
+			});
 		});
 
 		this.addCommand({
@@ -91,16 +95,6 @@ export default class ArcSidebar extends Plugin {
 			const right = workspace.getRightLeaf(false);
 			await right.setViewState({ type: VIEW_TYPE_NOTE, active: true });
 			workspace.revealLeaf(right);
-		}
-	}
-
-	async validateJsonPath(): Promise<boolean> {
-		const jsonPath = normalize(this.settings.jsonPath);
-		try {
-			await access(jsonPath, constants.R_OK);
-			return true;
-		} catch {
-			return false;
 		}
 	}
 }
