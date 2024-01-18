@@ -39,6 +39,17 @@ export default class ArcSidebar extends Plugin {
 				await this.revealNoteView();
 			}
 		});
+
+		this.registerEvent(workspace.on('editor-menu', (menu, editor, view) => {
+			menu.addItem((item) => {
+				item
+					.setTitle('Open Arc Note View')
+					.setIcon('arc')
+					.onClick(async () => {
+						await this.revealNoteView();
+					});
+			});
+		}));
 	}
 
 	async onunload(): Promise<void> {
