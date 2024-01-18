@@ -2,7 +2,7 @@
 import ArcSidebar from 'main';
 import { App, PluginSettingTab, Setting } from 'obsidian';
 import { TextInputModal } from 'text_input_modal';
-import { validateJsonPath } from 'parser';
+import { validateArcJsonPath } from 'parser';
 import { homedir } from 'os';
 
 export interface ArcSidebarSettings {
@@ -24,7 +24,7 @@ export class ArcSidebarSettingsTab extends PluginSettingTab {
 	async display(): Promise<void> {
 		this.containerEl.empty();
 
-		const jsonExists = await validateJsonPath();
+		const jsonExists = await validateArcJsonPath();
 
 		new Setting(this.containerEl)
 			.setName('Sidebar JSON file location')

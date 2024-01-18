@@ -3,10 +3,11 @@ import { addIcon, Plugin, WorkspaceLeaf } from 'obsidian';
 import { ArcSidebarSettings, ArcSidebarSettingsTab, DEFAULT_SETTINGS } from 'settings';
 import { ArcSidebarOutlineView, VIEW_TYPE_OUTLINE } from 'outline_view';
 import { ArcSidebarNoteView, VIEW_TYPE_NOTE } from 'note_view';
-import { readJson } from 'parser';
+import { parseArcJson } from 'parser';
 
 export default class ArcSidebar extends Plugin {
 	settings: ArcSidebarSettings;
+	data: Object = {};
 
 	async onload(): Promise<void> {
 		const { workspace } = this.app;
@@ -15,7 +16,7 @@ export default class ArcSidebar extends Plugin {
 
 		await this.loadSettings();
 		this.addSettingTab(new ArcSidebarSettingsTab(this.app, this));
-		await readJson(this.settings.jsonPath);
+		this.data = await parseArcJson(this.settings.jsonPath);
 
 		this.registerView(VIEW_TYPE_OUTLINE, (leaf) => new ArcSidebarOutlineView(this, leaf));
 		this.registerView(VIEW_TYPE_NOTE, (leaf) => new ArcSidebarNoteView(this, leaf));
@@ -25,7 +26,7 @@ export default class ArcSidebar extends Plugin {
 			this.initView(VIEW_TYPE_NOTE, workspace.getRightLeaf(false));
 
 			workspace.rootSplit.win.addEventListener('focus', async (_event) => {
-				await readJson(this.settings.jsonPath);
+				this.data = await parseArcJson(this.settings.jsonPath);
 			});
 		});
 
