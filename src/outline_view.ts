@@ -1,7 +1,8 @@
 
 import { HeaderMenu } from 'header_menu';
 import ArcSidebar from 'main';
-import { ItemView, WorkspaceLeaf } from 'obsidian';
+import { ArcSidebarItem, ArcSidebarSpace } from 'model';
+import { getIcon, ItemView, WorkspaceLeaf } from 'obsidian';
 
 export const VIEW_TYPE_OUTLINE = 'arc-sidebar-outline-view';
 
@@ -58,50 +59,62 @@ export class ArcSidebarOutlineView extends ItemView {
 	 	const container = this.containerEl;
 
 	 	container.prepend(this.menu.containerEl);
+	 	container.removeChild(container.children[2]);
+	 	const spacesEl = container.createDiv({ cls: 'nav-files-container' });
 
-	 	// container.removeChild(container.children[2]);
-	 	// const explorerEl = container.createDiv({ cls: 'nav-files-container' });
-
-	 	// // for each space
-	 	// const spaceEl = explorerEl
-	 	// 	.createDiv({ cls: 'tree-item nav-folder mod-root' });
-	 	// spaceEl
-	 	// 	.createDiv({ cls: 'tree-item-self nav-folder-title' })
-	 	// 	.createDiv({ cls: 'tree-item-inner nav-folder-title-content', text: 'Space name' });
-	 	// const rootEl = spaceEl
-	 	// 	.createDiv({ cls: 'tree-item-children nav-folder-children' })
-
-	 	// // folder example
-	 	// const folderEl = rootEl
-	 	// 	.createDiv({ cls: 'tree-item nav-folder is-collapsed' });
-
-	 	// const folderTitleEl = folderEl
-	 	// 	.createDiv({ cls: 'tree-item-self is-clickable nav-folder-title' });
-
-	 	// folderTitleEl
-	 	// 	.createDiv({ cls: 'tree-item-icon collapse-icon nav-folder-collapse-indicator is-collapsed' })
-	 	// 	.appendChild(<Node>getIcon('right-triangle'));
-	 	// folderTitleEl
-	 	// 	.createDiv({ cls: 'tree-item-inner nav-folder-title-content', text: 'Folder name' });
-
-	 	// const folderChildrenEl = folderEl
-	 	// 	.createDiv({ cls: 'tree-item-children nav-folder-children' });
-
-	 	// // folder item example
-	 	// folderChildrenEl
-	 	// 	.createDiv({ cls: 'tree-item nav-file' })
-	 	// 	.createDiv({ cls: 'tree-item-self is-clickable nav-file-title' })
-	 	// 	.createDiv({ cls: 'tree-item-inner nav-file-title-content', text: 'Child item name' })
-
-	 	// // root item example
-	 	// rootEl
-	 	// 	.createDiv({ cls: 'tree-item nav-file' })
-	 	// 	.createDiv({ cls: 'tree-item-self is-clickable nav-file-title' })
-	 	// 	.createDiv({ cls: 'tree-item-inner nav-file-title-content', text: 'Root item name' })
-
+	 	this.plugin.data.spaces.forEach((space) => {
+	 		this.addSpace(space, spacesEl);
+	 	});
 	 }
 
 	 protected async onClose(): Promise<void> {
 	 	this.app.workspace.detachLeavesOfType(VIEW_TYPE_OUTLINE);
+	 }
+
+	 private addSpace(space: ArcSidebarSpace, spacesEl: HTMLElement) {
+	 	const spaceEl = spacesEl.createDiv({ cls: 'tree-item nav-folder mod-root' });
+
+	 	spaceEl
+	 		.createDiv({ cls: 'tree-item-self nav-folder-title' })
+	 		.createDiv({ cls: 'tree-item-inner nav-folder-title-content', text: space.title });
+	 	const rootEl = spaceEl
+	 		.createDiv({ cls: 'tree-item-children nav-folder-children' });
+
+	 	this.addTree(space.id, rootEl);
+	 }
+
+	 private addTree(parentId: string, rootEl: HTMLElement) {
+	 	this.plugin.data.items
+	 		.filter((item) => item.parentId == parentId)
+	 		.forEach((item) => {
+	 			if (item.childrenIds.length == 0)
+	 				this.addItem(item, rootEl);
+	 			else
+	 				this.addFolder(item, rootEl);
+	 		});
+	 }
+
+	 private addItem(item: ArcSidebarItem, rootEl: HTMLElement) {
+	 	rootEl
+	 		.createDiv({ cls: 'tree-item nav-file' })
+	 		.createDiv({ cls: 'tree-item-self is-clickable nav-file-title' })
+	 		.createDiv({ cls: 'tree-item-inner nav-file-title-content', text: item.title });
+	 }
+
+	 private addFolder(item: ArcSidebarItem, rootEl: HTMLElement) {
+	 	const folderEl = rootEl
+	 		.createDiv({ cls: 'tree-item nav-folder' });
+	 	const folderTitleEl = folderEl
+	 		.createDiv({ cls: 'tree-item-self is-clickable nav-folder-title' });
+	 	const folderChildrenEl = folderEl
+	 		.createDiv({ cls: 'tree-item-children nav-folder-children' });
+
+	 	folderTitleEl
+	 		.createDiv({ cls: 'tree-item-icon collapse-icon nav-folder-collapse-indicator' })
+	 		.appendChild(<Node>getIcon('right-triangle'));
+	 	folderTitleEl
+	 		.createDiv({ cls: 'tree-item-inner nav-folder-title-content', text: item.title });
+
+	 	this.addTree(item.id, folderChildrenEl);
 	 }
 }

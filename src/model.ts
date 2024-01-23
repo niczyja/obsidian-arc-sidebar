@@ -1,7 +1,7 @@
 
-// Arc JSON model
+// JSON model
 
-export interface ArcSidebarWrapper {
+export interface ArcJSONWrapper {
 	sidebar: {
 		containers: {
 			items: Object[];
@@ -10,12 +10,13 @@ export interface ArcSidebarWrapper {
 	}
 }
 
-export interface ArcSidebarSpace {
+export interface ArcJSONSpace {
 	id: string;
 	title: string;
+	containerIDs: string[];
 }
 
-export interface ArcSidebarItem {
+export interface ArcJSONItem {
 	id: string;
 	parentID: string;
 	childrenIds: string[];
@@ -28,49 +29,22 @@ export interface ArcSidebarItem {
 	};
 }
 
-
-
-// export interface ArcSidebarJSON {
-// 	sidebarSyncState: {
-// 		container: {
-// 			value: {
-// 				orderedSpaceIDs: string[];
-// 				topAppsContainerID: string;
-// 				topAppsContainerIDs: Object[];
-// 				version: number;
-// 			};
-// 		};
-// 		items: Object[];
-// 		spaceModels: Object[];
-// 		lastSuccessfulSyncDate: number;
-// 	};
-// 	firebaseSyncState: Object;
-// 	sidebar: Object;
-// 	version: number;
-// }
-
-// export interface ArcSidebarSpaceModel {
-// 	encodedCKRecordFields: string;
-// 	value: {
-// 		containerIDs: string[];
-// 		customInfo: {
-// 			iconType: { icon: string };
-// 		};
-// 		id: string;
-// 		isPinnedSectionExpanded: boolean;
-// 		newContainerIDs: Object[];
-// 		profile: Object;
-// 		title: string;
-// 	};
-// }
-
 // Plugin model
 
-// export interface Sidebar {
-// 	spaces: Space[];
-// }
+export interface ArcSidebarModel {
+	spaces: ArcSidebarSpace[];
+	items: ArcSidebarItem[];
+}
 
-// export interface Space {
-// 	id: string;
-// 	name: string;
-// }
+export interface ArcSidebarSpace {
+	id: string;
+	title: string;
+}
+
+export interface ArcSidebarItem {
+	id: string;
+	parentId: string;
+	childrenIds: string[];
+	title: string;
+	url: string | null;
+}

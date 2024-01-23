@@ -4,10 +4,11 @@ import { ArcSidebarSettings, ArcSidebarSettingsTab, DEFAULT_SETTINGS } from 'set
 import { ArcSidebarOutlineView, VIEW_TYPE_OUTLINE } from 'outline_view';
 import { ArcSidebarNoteView, VIEW_TYPE_NOTE } from 'note_view';
 import { parseArcJson } from 'parser';
+import { ArcSidebarModel } from 'model';
 
 export default class ArcSidebar extends Plugin {
 	settings: ArcSidebarSettings;
-	data: Object = {};
+	data: ArcSidebarModel;
 
 	async onload(): Promise<void> {
 		const { workspace } = this.app;

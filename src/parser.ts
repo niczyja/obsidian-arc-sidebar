@@ -1,37 +1,56 @@
 
 import { access, constants, readFile } from 'fs/promises';
-import { ArcSidebarItem, ArcSidebarSpace, ArcSidebarWrapper } from 'model';
+import { ArcJSONItem, ArcJSONSpace, ArcJSONWrapper, ArcSidebarItem, ArcSidebarModel, ArcSidebarSpace } from 'model';
 import { normalize } from 'path';
 
-export async function parseArcJson(jsonPath: string): Promise<Object> {
+export async function parseArcJson(jsonPath: string): Promise<ArcSidebarModel> {
 	try {
 		const data = await readFile(jsonPath, 'utf8');
-		const wrapper: ArcSidebarWrapper = JSON.parse(data);
+		const wrapper: ArcJSONWrapper = JSON.parse(data);
 		const spaces: ArcSidebarSpace[] = [];
 		const items: ArcSidebarItem[] = [];
 
-		wrapper.sidebar.containers[1].spaces.forEach((space, index) => {
+		wrapper.sidebar.containers[1].spaces.forEach((value, index) => {
 			if (index % 2 == 0)
 				return;
 
-			spaces.push(<ArcSidebarSpace>space);
+			const spaceJson = <ArcJSONSpace>value;
+			spaces.push({
+				id: spaceJson.containerIDs[spaceJson.containerIDs.indexOf('pinned') + 1],
+				title: spaceJson.title
+			});
 		});
 
-		wrapper.sidebar.containers[1].items.forEach((item, index) => {
+		wrapper.sidebar.containers[1].items.forEach((value, index) => {
 			if (index % 2 == 0)
 				return;
 
-			items.push(<ArcSidebarItem>item);
+			const itemJson = <ArcJSONItem>value;
+			let itemTitle = itemJson.title;
+			let itemUrl = null;
+			if (itemJson.data.tab) {
+				itemUrl = itemJson.data.tab.savedURL;
+				if (!itemTitle)
+					itemTitle = itemJson.data.tab.savedTitle;
+			}
+
+			items.push({
+				id: itemJson.id,
+				parentId: itemJson.parentID,
+				childrenIds: itemJson.childrenIds,
+				title: itemTitle,
+				url: itemUrl
+			});
 		});
 
-		console.log(wrapper);
-		console.log(spaces);
-		console.log(items);
+		// console.log(wrapper);
+		// console.log(spaces);
+		// console.log(items);
 
-		return {};
+		return { spaces: spaces, items: items };
 	} catch(err) {
 		console.log('error parsing json', err);
-		return {};
+		return { spaces: [], items: [] };
 	}
 }
 
