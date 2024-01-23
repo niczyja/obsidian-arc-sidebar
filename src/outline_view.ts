@@ -1,16 +1,19 @@
 
+import { HeaderMenu } from 'header_menu';
 import ArcSidebar from 'main';
-import { getIcon, ItemView, WorkspaceLeaf } from 'obsidian';
+import { ItemView, WorkspaceLeaf } from 'obsidian';
 
 export const VIEW_TYPE_OUTLINE = 'arc-sidebar-outline-view';
 
 export class ArcSidebarOutlineView extends ItemView {
 	private plugin: ArcSidebar;
+	private menu: HeaderMenu;
 
 	constructor(plugin: ArcSidebar, leaf: WorkspaceLeaf) {
 		super(leaf);
 		this.plugin = plugin;
 		this.navigation = false;
+		this.menu = new HeaderMenu();
 	}
 
 	getViewType(): string {
@@ -25,79 +28,76 @@ export class ArcSidebarOutlineView extends ItemView {
 	    return 'arc';
 	}
 
+	onload(): void {
+		this.addChild(this.menu);
+		this.menu.addItem((item) => {
+			item
+				.setIcon('search')
+				.setLabel('Show search filter')
+				.onClick((el) => console.log(el));
+		});
+		this.menu.addItem((item) => {
+			item
+				.setIcon('arrow-up-narrow-wide')
+				.setLabel('Change sort order')
+				.onClick((el) => console.log(el));
+		});
+		this.menu.addItem((item) => {
+			item
+				.setIcon('chevrons-up-down')
+				.setLabel('Expand all')
+				.onClick((el) => console.log(el));
+		});
+	}
+
+	onunload(): void {
+		this.removeChild(this.menu);
+	}
+
 	 protected async onOpen(): Promise<void> {
 	 	const container = this.containerEl;
 
-	 	const menuEl = container
-	 		.createDiv({ cls: 'nav-header', prepend: true })
-	 		.createDiv({ cls: 'nav-buttons-container' });
+	 	container.prepend(this.menu.containerEl);
 
-	 	menuEl
-	 		.createDiv({
-	 			cls: 'clickable-icon nav-action-button',
-	 			attr: { 'aria-label': 'Show search filter' } 
-	 		}, (el) => el.onClickEvent((ev) => {
-	 			console.log(el, ev);
-	 		}))
-	 		.appendChild(<Node>getIcon('search'));
+	 	// container.removeChild(container.children[2]);
+	 	// const explorerEl = container.createDiv({ cls: 'nav-files-container' });
 
-	 	menuEl
-	 		.createDiv({
-	 			cls: 'clickable-icon nav-action-button',
-	 			attr: { 'aria-label': 'Change sort order' }
-	 		}, (el) => el.onClickEvent((ev) => {
-	 			console.log(el, ev);
-	 		}))
-	 		.appendChild(<Node>getIcon('arrow-up-narrow-wide'));
+	 	// // for each space
+	 	// const spaceEl = explorerEl
+	 	// 	.createDiv({ cls: 'tree-item nav-folder mod-root' });
+	 	// spaceEl
+	 	// 	.createDiv({ cls: 'tree-item-self nav-folder-title' })
+	 	// 	.createDiv({ cls: 'tree-item-inner nav-folder-title-content', text: 'Space name' });
+	 	// const rootEl = spaceEl
+	 	// 	.createDiv({ cls: 'tree-item-children nav-folder-children' })
 
-	 	menuEl
-	 		.createDiv({
-	 			cls: 'clickable-icon nav-action-button',
-	 			attr: { 'aria-label': 'Expand all' }
-	 		}, (el) => el.onClickEvent((ev) => {
-	 			console.log(el, ev);
-	 		}))
-	 		.appendChild(<Node>getIcon('chevrons-up-down'));
+	 	// // folder example
+	 	// const folderEl = rootEl
+	 	// 	.createDiv({ cls: 'tree-item nav-folder is-collapsed' });
 
-	 	container.removeChild(container.children[2]);
-	 	const explorerEl = container.createDiv({ cls: 'nav-files-container' });
+	 	// const folderTitleEl = folderEl
+	 	// 	.createDiv({ cls: 'tree-item-self is-clickable nav-folder-title' });
 
-	 	// for each space
-	 	const spaceEl = explorerEl
-	 		.createDiv({ cls: 'tree-item nav-folder mod-root' });
-	 	spaceEl
-	 		.createDiv({ cls: 'tree-item-self nav-folder-title' })
-	 		.createDiv({ cls: 'tree-item-inner nav-folder-title-content', text: 'Space name' });
-	 	const rootEl = spaceEl
-	 		.createDiv({ cls: 'tree-item-children nav-folder-children' })
+	 	// folderTitleEl
+	 	// 	.createDiv({ cls: 'tree-item-icon collapse-icon nav-folder-collapse-indicator is-collapsed' })
+	 	// 	.appendChild(<Node>getIcon('right-triangle'));
+	 	// folderTitleEl
+	 	// 	.createDiv({ cls: 'tree-item-inner nav-folder-title-content', text: 'Folder name' });
 
-	 	// folder example
-	 	const folderEl = rootEl
-	 		.createDiv({ cls: 'tree-item nav-folder is-collapsed' });
+	 	// const folderChildrenEl = folderEl
+	 	// 	.createDiv({ cls: 'tree-item-children nav-folder-children' });
 
-	 	const folderTitleEl = folderEl
-	 		.createDiv({ cls: 'tree-item-self is-clickable nav-folder-title' });
+	 	// // folder item example
+	 	// folderChildrenEl
+	 	// 	.createDiv({ cls: 'tree-item nav-file' })
+	 	// 	.createDiv({ cls: 'tree-item-self is-clickable nav-file-title' })
+	 	// 	.createDiv({ cls: 'tree-item-inner nav-file-title-content', text: 'Child item name' })
 
-	 	folderTitleEl
-	 		.createDiv({ cls: 'tree-item-icon collapse-icon nav-folder-collapse-indicator is-collapsed' })
-	 		.appendChild(<Node>getIcon('right-triangle'));
-	 	folderTitleEl
-	 		.createDiv({ cls: 'tree-item-inner nav-folder-title-content', text: 'Folder name' });
-
-	 	const folderChildrenEl = folderEl
-	 		.createDiv({ cls: 'tree-item-children nav-folder-children' });
-
-	 	// folder item example
-	 	folderChildrenEl
-	 		.createDiv({ cls: 'tree-item nav-file' })
-	 		.createDiv({ cls: 'tree-item-self is-clickable nav-file-title' })
-	 		.createDiv({ cls: 'tree-item-inner nav-file-title-content', text: 'Child item name' })
-
-	 	// root item example
-	 	rootEl
-	 		.createDiv({ cls: 'tree-item nav-file' })
-	 		.createDiv({ cls: 'tree-item-self is-clickable nav-file-title' })
-	 		.createDiv({ cls: 'tree-item-inner nav-file-title-content', text: 'Root item name' })
+	 	// // root item example
+	 	// rootEl
+	 	// 	.createDiv({ cls: 'tree-item nav-file' })
+	 	// 	.createDiv({ cls: 'tree-item-self is-clickable nav-file-title' })
+	 	// 	.createDiv({ cls: 'tree-item-inner nav-file-title-content', text: 'Root item name' })
 
 	 }
 
