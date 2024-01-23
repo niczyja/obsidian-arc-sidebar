@@ -39,6 +39,7 @@ export interface ArcSidebarModel {
 export interface ArcSidebarSpace {
 	id: string;
 	title: string;
+	item: ArcSidebarItem;
 }
 
 export interface ArcSidebarItem {

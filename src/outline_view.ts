@@ -80,12 +80,13 @@ export class ArcSidebarOutlineView extends ItemView {
 	 	const rootEl = spaceEl
 	 		.createDiv({ cls: 'tree-item-children nav-folder-children' });
 
-	 	this.addTree(space.id, rootEl);
+	 	this.addTree(space.item, rootEl);
 	 }
 
-	 private addTree(parentId: string, rootEl: HTMLElement) {
+	 private addTree(parentItem: ArcSidebarItem, rootEl: HTMLElement) {
 	 	this.plugin.data.items
-	 		.filter((item) => item.parentId == parentId)
+	 		.filter((item) => item.parentId == parentItem.id)
+	 		.sort((lhs, rhs) => parentItem.childrenIds.indexOf(lhs.id) - parentItem.childrenIds.indexOf(rhs.id))
 	 		.forEach((item) => {
 	 			if (item.childrenIds.length == 0)
 	 				this.addItem(item, rootEl);
@@ -115,6 +116,6 @@ export class ArcSidebarOutlineView extends ItemView {
 	 	folderTitleEl
 	 		.createDiv({ cls: 'tree-item-inner nav-folder-title-content', text: item.title });
 
-	 	this.addTree(item.id, folderChildrenEl);
+	 	this.addTree(item, folderChildrenEl);
 	 }
 }

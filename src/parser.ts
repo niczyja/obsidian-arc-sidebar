@@ -15,9 +15,18 @@ export async function parseArcJson(jsonPath: string): Promise<ArcSidebarModel> {
 				return;
 
 			const spaceJson = <ArcJSONSpace>value;
+			const pinnedId = spaceJson.containerIDs[spaceJson.containerIDs.indexOf('pinned') + 1];
+			const spaceItem = <ArcJSONItem>wrapper.sidebar.containers[1].items.find((value) => (<ArcJSONItem>value).id == pinnedId);
 			spaces.push({
-				id: spaceJson.containerIDs[spaceJson.containerIDs.indexOf('pinned') + 1],
-				title: spaceJson.title
+				id: spaceJson.id,
+				title: spaceJson.title,
+				item: {
+					id: spaceItem.id,
+					parentId: spaceItem.parentID,
+					childrenIds: spaceItem.childrenIds,
+					title: spaceItem.title,
+					url: null
+				}
 			});
 		});
 
