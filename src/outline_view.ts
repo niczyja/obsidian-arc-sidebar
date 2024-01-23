@@ -98,7 +98,9 @@ export class ArcSidebarOutlineView extends ItemView {
 	 private addItem(item: ArcSidebarItem, rootEl: HTMLElement) {
 	 	rootEl
 	 		.createDiv({ cls: 'tree-item nav-file' })
-	 		.createDiv({ cls: 'tree-item-self is-clickable nav-file-title' })
+	 		.createDiv({ cls: 'tree-item-self is-clickable nav-file-title' }, (el) => {
+	 			el.onClickEvent((ev) => ev.doc.win.open(item.url || undefined));
+	 		})
 	 		.createDiv({ cls: 'tree-item-inner nav-file-title-content', text: item.title });
 	 }
 
