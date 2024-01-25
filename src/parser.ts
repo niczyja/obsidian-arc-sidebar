@@ -63,10 +63,10 @@ export async function parseArcJson(jsonPath: string): Promise<ArcSidebarModel> {
 	}
 }
 
-export async function validateArcJsonPath(): Promise<boolean> {
-	const jsonPath = normalize(this.settings.jsonPath);
+export async function validatePath(path: string): Promise<boolean> {
+	const normalizedPath = normalize(path);
 	try {
-		await access(jsonPath, constants.R_OK);
+		await access(normalizedPath, constants.R_OK);
 		return true;
 	} catch {
 		return false;
