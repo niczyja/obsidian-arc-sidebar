@@ -71,7 +71,7 @@ export default class ArcSidebar extends Plugin {
 
 	async initView(viewType: string, leaf: WorkspaceLeaf): Promise<void> {
 		this.app.workspace.detachLeavesOfType(viewType);
-		await leaf.setViewState({ type: viewType, active: true });
+		await leaf.setViewState({ type: viewType, active: true }); //TODO: change active to false for prod
 	}
 
 	async revealOutlineView(): Promise<void> {
