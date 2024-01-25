@@ -1,20 +1,22 @@
 
+import { ItemView, WorkspaceLeaf } from 'obsidian';
 import { HeaderMenu } from 'header_menu';
+import { LinkTree } from 'link_tree';
 import ArcSidebar from 'main';
-import { ArcSidebarItem, ArcSidebarSpace } from 'model';
-import { getIcon, ItemView, WorkspaceLeaf } from 'obsidian';
 
 export const VIEW_TYPE_OUTLINE = 'arc-sidebar-outline-view';
 
 export class ArcSidebarOutlineView extends ItemView {
 	private plugin: ArcSidebar;
 	private menu: HeaderMenu;
+	private tree: LinkTree;
 
 	constructor(plugin: ArcSidebar, leaf: WorkspaceLeaf) {
 		super(leaf);
 		this.plugin = plugin;
 		this.navigation = false;
 		this.menu = new HeaderMenu();
+		this.tree = new LinkTree(this.plugin.data.spaces.map((space) => space.item), 'Spaces');
 	}
 
 	getViewType(): string {
@@ -31,6 +33,8 @@ export class ArcSidebarOutlineView extends ItemView {
 
 	onload(): void {
 		this.addChild(this.menu);
+		this.addChild(this.tree);
+
 		this.menu.addItem((item) => {
 			item
 				.setIcon('search')
@@ -52,6 +56,7 @@ export class ArcSidebarOutlineView extends ItemView {
 	}
 
 	onunload(): void {
+		this.removeChild(this.tree);
 		this.removeChild(this.menu);
 	}
 
@@ -60,64 +65,10 @@ export class ArcSidebarOutlineView extends ItemView {
 
 	 	container.prepend(this.menu.containerEl);
 	 	container.removeChild(container.children[2]);
-	 	const spacesEl = container.createDiv({ cls: 'nav-files-container' });
-
-	 	this.plugin.data.spaces.forEach((space) => {
-	 		this.addSpace(space, spacesEl);
-	 	});
+	 	container.append(this.tree.containerEl);
 	 }
 
 	 protected async onClose(): Promise<void> {
 	 	this.app.workspace.detachLeavesOfType(VIEW_TYPE_OUTLINE);
-	 }
-
-	 private addSpace(space: ArcSidebarSpace, spacesEl: HTMLElement) {
-	 	const spaceEl = spacesEl.createDiv({ cls: 'tree-item nav-folder mod-root' });
-
-	 	spaceEl
-	 		.createDiv({ cls: 'tree-item-self nav-folder-title' })
-	 		.createDiv({ cls: 'tree-item-inner nav-folder-title-content', text: space.title });
-	 	const rootEl = spaceEl
-	 		.createDiv({ cls: 'tree-item-children nav-folder-children' });
-
-	 	this.addTree(space.item, rootEl);
-	 }
-
-	 private addTree(parentItem: ArcSidebarItem, rootEl: HTMLElement) {
-	 	this.plugin.data.items
-	 		.filter((item) => item.parentId == parentItem.id)
-	 		.sort((lhs, rhs) => parentItem.childrenIds.indexOf(lhs.id) - parentItem.childrenIds.indexOf(rhs.id))
-	 		.forEach((item) => {
-	 			if (item.childrenIds.length == 0)
-	 				this.addItem(item, rootEl);
-	 			else
-	 				this.addFolder(item, rootEl);
-	 		});
-	 }
-
-	 private addItem(item: ArcSidebarItem, rootEl: HTMLElement) {
-	 	rootEl
-	 		.createDiv({ cls: 'tree-item nav-file' })
-	 		.createDiv({ cls: 'tree-item-self is-clickable nav-file-title' }, (el) => {
-	 			el.onClickEvent((ev) => ev.doc.win.open(item.url || undefined));
-	 		})
-	 		.createDiv({ cls: 'tree-item-inner nav-file-title-content', text: item.title });
-	 }
-
-	 private addFolder(item: ArcSidebarItem, rootEl: HTMLElement) {
-	 	const folderEl = rootEl
-	 		.createDiv({ cls: 'tree-item nav-folder' });
-	 	const folderTitleEl = folderEl
-	 		.createDiv({ cls: 'tree-item-self is-clickable nav-folder-title' });
-	 	const folderChildrenEl = folderEl
-	 		.createDiv({ cls: 'tree-item-children nav-folder-children' });
-
-	 	folderTitleEl
-	 		.createDiv({ cls: 'tree-item-icon collapse-icon nav-folder-collapse-indicator' })
-	 		.appendChild(<Node>getIcon('right-triangle'));
-	 	folderTitleEl
-	 		.createDiv({ cls: 'tree-item-inner nav-folder-title-content', text: item.title });
-
-	 	this.addTree(item, folderChildrenEl);
 	 }
 }

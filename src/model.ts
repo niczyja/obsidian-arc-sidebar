@@ -33,7 +33,6 @@ export interface ArcJSONItem {
 
 export interface ArcSidebarModel {
 	spaces: ArcSidebarSpace[];
-	items: ArcSidebarItem[];
 }
 
 export interface ArcSidebarSpace {
@@ -44,8 +43,8 @@ export interface ArcSidebarSpace {
 
 export interface ArcSidebarItem {
 	id: string;
-	parentId: string;
-	childrenIds: string[];
+	parent: ArcSidebarItem | null;
+	children: ArcSidebarItem[];
 	title: string;
 	url: string | null;
 }
