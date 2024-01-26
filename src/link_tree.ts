@@ -3,15 +3,25 @@ import { ArcSidebarItem } from 'model';
 import { Component, getIcon } from 'obsidian';
 
 export class LinkTree extends Component {
-	containerEl: HTMLElement;
-	items: ArcSidebarItem[];
-	title: string;
+	public containerEl: HTMLElement;
+	public title: string;
+	private _items: ArcSidebarItem[];
+	private itemsEl: HTMLElement;
 
 	constructor(items: ArcSidebarItem[], title: string) {
         super();
         this.containerEl = createDiv({ cls: 'nav-files-container' });
-		this.items = items;
+		this._items = items;
 		this.title = title;
+	}
+
+	public get items() {
+		return this._items;
+	}
+
+	public set items(newItems: ArcSidebarItem[]) {
+		this._items = newItems;
+		this.populateItems();
 	}
 
 	onload(): void {
@@ -19,13 +29,18 @@ export class LinkTree extends Component {
 	 	rootEl
 	 		.createDiv({ cls: 'tree-item-self nav-folder-title' })
 	 		.createDiv({ cls: 'tree-item-inner nav-folder-title-content', text: this.title });
-	 	const itemsEl = rootEl.createDiv({ cls: 'tree-item-children nav-folder-children' });
+	 	this.itemsEl = rootEl.createDiv({ cls: 'tree-item-children nav-folder-children' });
 
-	 	this.items.forEach((item) => this.addItem(item, itemsEl));
+	 	this.populateItems();
 	}
 
 	onunload(): void {
 	    this.containerEl.empty();
+	}
+
+	private populateItems() {
+		this.itemsEl.empty();
+	 	this._items.forEach((item) => this.addItem(item, this.itemsEl));
 	}
 
 	private addItem(item: ArcSidebarItem, rootEl: HTMLElement) {
