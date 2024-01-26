@@ -3,9 +3,8 @@
 	"name": "Arc Browser Sidebar",
 	"version": "0.0.1",
 	"minAppVersion": "0.15.0",
-	"description": "Makes a note with contents of your Arc sidebar",
+	"description": "Allows to display contents of Arc sidebar right besides your notes",
 	"author": "niczyja",
-	"authorUrl": "https://niczyja.pl",
-	"fundingUrl": "https://obsidian.md/pricing",
+	"authorUrl": "https://github.com/niczyja",
 	"isDesktopOnly": true
 }
