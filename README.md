@@ -1,96 +1,53 @@
-# Obsidian Sample Plugin
+# Obsidian Arc Sidebar Plugin
 
-This is a sample plugin for Obsidian (https://obsidian.md).
+![License](https://img.shields.io/github/license/niczyja/obsidian-arc-sidebar)
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/niczyja/obsidian-arc-sidebar)
 
-This project uses Typescript to provide type checking and documentation.
-The repo depends on the latest plugin API (obsidian.d.ts) in Typescript Definition format, which contains TSDoc comments describing what it does.
+An [Obsidian](https://obsidian.md) plugin that lets you access contents of your [Arc Browser](https://arc.net) sidebar and connect them to notes in your vault.
 
-**Note:** The Obsidian API is still in early alpha and is subject to change at any time!
+How does it work?
+- Reads contents of Arc sidebar and displays it in Obsidian
+- Allows you to connect specific parts of Arc sidebar with your notes using tags (i.e. `#arc-space-folder-item`)
+- Reloads each time you focus back on Obsidian to keep you up to date
+- Sidebar links can be opened directly from Obsidian
+- Plugin only reads from Arc sidebar JSON file, and does not modify it
 
-This sample plugin demonstrates some of the basic functionality the plugin API can do.
-- Adds a ribbon icon, which shows a Notice when clicked.
-- Adds a command "Open Sample Modal" which opens a Modal.
-- Adds a plugin setting tab to the settings page.
-- Registers a global click event and output 'click' to the console.
-- Registers a global interval which logs 'setInterval' to the console.
+![Showcase screenshot](./showcase.png)
 
-## First time developing plugins?
+Features / TODO
+-
 
-Quick starting guide for new plugin devs:
+- [x] Adds outline view in left sidebar that displays full contents of Arc sidebar
+- [x] Adds note view in right sidebar that displays filtered contents of Arc sidebar
+- [x] Adds command palette actions to open each view
+- [x] Allows to filter contents in note view by adding tags to note using format:
+  - `#arc-space` - will display all links from given space
+  - `#arc-space-folder` - display all links from folder in space, you can nest folders by adding more `-folder`
+  - `#arc-space-folder-item` - will display specific item only (names in tags contains only alphanumeric characters)
+- [x] Open link when clicking on item name
+- [ ] Add folding and unfolding for spaces and folders
+- [ ] Add expand/collapse option to both views
+- [ ] Add search/filter to both views
+- [ ] Add sorting options to both views
+- [ ] Find out wheather it's possible for links to open directly in their respective space/folder location in Arc
+- [ ] Display favicons next to items (from Arc favicon cache)
+- [ ] Optimise reloading / add some caching / checking for changes to reduce reloading
+- [ ] Improve note view refresh rate / response to tag changes
+- [ ] Idea: allow to somehow permanently copy/store sidebar items in note
 
-- Check if [someone already developed a plugin for what you want](https://obsidian.md/plugins)! There might be an existing plugin similar enough that you can partner up with.
-- Make a copy of this repo as a template with the "Use this template" button (login to GitHub if you don't see it).
-- Clone your repo to a local development folder. For convenience, you can place this folder in your `.obsidian/plugins/your-plugin-name` folder.
-- Install NodeJS, then run `npm i` in the command line under your repo folder.
-- Run `npm run dev` to compile your plugin from `main.ts` to `main.js`.
-- Make changes to `main.ts` (or create new `.ts` files). Those changes should be automatically compiled into `main.js`.
-- Reload Obsidian to load the new version of your plugin.
-- Enable plugin in settings window.
-- For updates to the Obsidian API run `npm update` in the command line under your repo folder.
+Installation
+-
 
-## Releasing new releases
+Plugin is not yet released to community, because it's barely usable, but if you want to install anyway just download latest release and drop it into your vaults plugin folder.
 
-- Update your `manifest.json` with your new version number, such as `1.0.1`, and the minimum Obsidian version required for your latest release.
-- Update your `versions.json` file with `"new-plugin-version": "minimum-obsidian-version"` so older versions of Obsidian can download an older version of your plugin that's compatible.
-- Create new GitHub release using your new version number as the "Tag version". Use the exact version number, don't include a prefix `v`. See here for an example: https://github.com/obsidianmd/obsidian-sample-plugin/releases
-- Upload the files `manifest.json`, `main.js`, `styles.css` as binary attachments. Note: The manifest.json file must be in two places, first the root path of your repository and also in the release.
-- Publish the release.
+Limitations
+- 
 
-> You can simplify the version bump process by running `npm version patch`, `npm version minor` or `npm version major` after updating `minAppVersion` manually in `manifest.json`.
-> The command will bump version in `manifest.json` and `package.json`, and add the entry for the new version to `versions.json`
+- Don't know if it works on Windows. It's possible to change sidebar JSON file location in plugin settings, but I don't know if JSON structure is the same.
+- Only links from Arc sidebar are supported for now. Other types of items (i.e. easels) will display empty item.
+- When you add tags to note, updating view on the right is a bit wonky (sometimes instant, sometimes not).
 
-## Adding your plugin to the community plugin list
+Contributing
+-
 
-- Check https://github.com/obsidianmd/obsidian-releases/blob/master/plugin-review.md
-- Publish an initial version.
-- Make sure you have a `README.md` file in the root of your repo.
-- Make a pull request at https://github.com/obsidianmd/obsidian-releases to add your plugin.
-
-## How to use
-
-- Clone this repo.
-- Make sure your NodeJS is at least v16 (`node --version`).
-- `npm i` or `yarn` to install dependencies.
-- `npm run dev` to start compilation in watch mode.
-
-## Manually installing the plugin
-
-- Copy over `main.js`, `styles.css`, `manifest.json` to your vault `VaultFolder/.obsidian/plugins/your-plugin-id/`.
-
-## Improve code quality with eslint (optional)
-- [ESLint](https://eslint.org/) is a tool that analyzes your code to quickly find problems. You can run ESLint against your plugin to find common bugs and ways to improve your code. 
-- To use eslint with this project, make sure to install eslint from terminal:
-  - `npm install -g eslint`
-- To use eslint to analyze this project use this command:
-  - `eslint main.ts`
-  - eslint will then create a report with suggestions for code improvement by file and line number.
-- If your source code is in a folder, such as `src`, you can use eslint with this command to analyze all files in that folder:
-  - `eslint .\src\`
-
-## Funding URL
-
-You can include funding URLs where people who use your plugin can financially support it.
-
-The simple way is to set the `fundingUrl` field to your link in your `manifest.json` file:
-
-```json
-{
-    "fundingUrl": "https://buymeacoffee.com"
-}
-```
-
-If you have multiple URLs, you can also do:
-
-```json
-{
-    "fundingUrl": {
-        "Buy Me a Coffee": "https://buymeacoffee.com",
-        "GitHub Sponsor": "https://github.com/sponsors",
-        "Patreon": "https://www.patreon.com/"
-    }
-}
-```
-
-## API Documentation
-
-See https://github.com/obsidianmd/obsidian-api
+If you have any ideas, suggestions, or have found any bugs please [open an issue](https://github.com/niczyja/obsidian-arc-sidebar/issues).
