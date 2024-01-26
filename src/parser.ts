@@ -62,7 +62,7 @@ function createItem(itemJson: ArcJSONItem, allItemsJson: ArcJSONItem[], parentIt
   return newItem;
 }
 
-export function filterItems(items: ArcSidebarItem[], key: keyof ArcSidebarItem, query: string | string[], exact: boolean = true) {
+export function filterItems(items: ArcSidebarItem[], key: keyof ArcSidebarItem, query: string | string[], exact = true) {
   const matchingItems = (result: ArcSidebarItem[], item: ArcSidebarItem) => {
     const queries: string[] = Array.isArray(query) ? query : [query];
 

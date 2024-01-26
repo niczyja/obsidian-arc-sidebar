@@ -4,8 +4,8 @@
 export interface ArcJSONWrapper {
   sidebar: {
     containers: {
-      items: Object[];
-      spaces: Object[];
+      items: unknown[];
+      spaces: unknown[];
     }[];
   }
 }

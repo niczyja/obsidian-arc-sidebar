@@ -1,5 +1,5 @@
 
-import { getAllTags, ItemView, TFile, WorkspaceLeaf } from 'obsidian';
+import { ItemView, WorkspaceLeaf } from 'obsidian';
 import { HeaderMenu } from 'header_menu';
 import { LinkTree } from 'link_tree';
 import { filterItems } from 'parser';

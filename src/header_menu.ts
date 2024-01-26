@@ -17,7 +17,7 @@ export class HeaderMenu extends Component {
       this.containerEl.empty();
   }
 
-  addItem(cb: (item: HeaderMenuItem) => any) {
+  addItem(cb: (item: HeaderMenuItem) => void) {
     cb(new HeaderMenuItem(<HTMLElement>this.containerEl.children[0]));
   }
 }
@@ -42,9 +42,8 @@ export class HeaderMenuItem {
     return this;
   }
 
-  onClick(cb: (el: HeaderMenuItem) => any): HeaderMenuItem {
-    const that = this;
-    this.contentEl.onClickEvent((_ev) => cb(that));
+  onClick(cb: (el: HeaderMenuItem) => void): HeaderMenuItem {
+    this.contentEl.onClickEvent((_ev) => cb(this));
     return this;
   }
 }
