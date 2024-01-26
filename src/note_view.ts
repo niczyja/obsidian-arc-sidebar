@@ -1,5 +1,5 @@
 
-import { ItemView, WorkspaceLeaf } from 'obsidian';
+import { ItemView, TagCache, WorkspaceLeaf } from 'obsidian';
 import { HeaderMenu } from 'header_menu';
 import { LinkTree } from 'link_tree';
 import { filterItems } from 'parser';
@@ -74,13 +74,16 @@ export class ArcSidebarNoteView extends ItemView {
 
    private getActiveFileTags(): string[] {
     const file = this.plugin.app.workspace.getActiveFile();
+    const tags: string[] = [];
+
     if (file == null)
-      return [];
+      return tags;
 
     const cache = this.plugin.app.metadataCache.getFileCache(file);
-    return []
+    const tagsCache = cache?.tags === undefined ? <TagCache[]>[] : cache.tags!;
+    return tags
       .concat(cache?.frontmatter?.tags)
-      .concat(cache?.tags?.map((t) => t.tag.substring(1)))
+      .concat(tagsCache.map((t) => t.tag.substring(1)))
       .filter((v, i, a) => a.indexOf(v) === i && (<string>v)?.startsWith('arc'));
    }
 }
