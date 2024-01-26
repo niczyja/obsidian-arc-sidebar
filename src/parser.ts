@@ -16,17 +16,14 @@ export async function parseArcJson(jsonPath: string): Promise<ArcSidebarModel> {
 			const spaceJson = <ArcJSONSpace>value;
 			const pinnedId = spaceJson.containerIDs[spaceJson.containerIDs.indexOf('pinned') + 1];
 			const spaceItemJson = <ArcJSONItem>wrapper.sidebar.containers[1].items.find((value) => (<ArcJSONItem>value).id == pinnedId);
-			const spaceItem = createItem(spaceItemJson, <ArcJSONItem[]>wrapper.sidebar.containers[1].items, null);
+			spaceItemJson.title = spaceJson.title;
 
-			spaceItem.title = spaceJson.title;
 			spaces.push({
 				id: spaceJson.id,
 				title: spaceJson.title,
-				item: spaceItem
+				item: createItem(spaceItemJson, <ArcJSONItem[]>wrapper.sidebar.containers[1].items, null)
 			});
 		});
-
-		console.log(spaces);
 
 		return { spaces: spaces };
 	} catch(err) {
@@ -37,18 +34,20 @@ export async function parseArcJson(jsonPath: string): Promise<ArcSidebarModel> {
 
 function createItem(itemJson: ArcJSONItem, allItemsJson: ArcJSONItem[], parentItem: ArcSidebarItem | null): ArcSidebarItem {
 	let itemTitle = itemJson.title;
-	let itemUrl = null;
+	let itemUrl: string | null = null;
 	if (itemJson.data.tab) {
 		itemUrl = itemJson.data.tab.savedURL;
 		if (!itemTitle)
 			itemTitle = itemJson.data.tab.savedTitle;
 	}
+	const tag: string = (itemTitle || '').toLowerCase().replace(/\W+/g, '');
 
 	const newItem = {
 		id: itemJson.id,
 		parent: parentItem,
 		children: <ArcSidebarItem[]>[],
 		title: itemTitle,
+		tag: (parentItem?.tag || 'arc') + '-' + tag,
 		url: itemUrl
 	}
 

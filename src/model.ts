@@ -46,5 +46,6 @@ export interface ArcSidebarItem {
 	parent: ArcSidebarItem | null;
 	children: ArcSidebarItem[];
 	title: string;
+	tag: string;
 	url: string | null;
 }
