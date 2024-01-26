@@ -35,24 +35,24 @@ export class ArcSidebarOutlineView extends ItemView {
 		this.addChild(this.menu);
 		this.addChild(this.tree);
 
-		this.menu.addItem((item) => {
-			item
-				.setIcon('search')
-				.setLabel('Show search filter')
-				.onClick((el) => console.log(el));
-		});
-		this.menu.addItem((item) => {
-			item
-				.setIcon('arrow-up-narrow-wide')
-				.setLabel('Change sort order')
-				.onClick((el) => console.log(el));
-		});
-		this.menu.addItem((item) => {
-			item
-				.setIcon('chevrons-up-down')
-				.setLabel('Expand all')
-				.onClick((el) => console.log(el));
-		});
+		// this.menu.addItem((item) => {
+		// 	item
+		// 		.setIcon('search')
+		// 		.setLabel('Show search filter')
+		// 		.onClick((el) => console.log(el));
+		// });
+		// this.menu.addItem((item) => {
+		// 	item
+		// 		.setIcon('arrow-up-narrow-wide')
+		// 		.setLabel('Change sort order')
+		// 		.onClick((el) => console.log(el));
+		// });
+		// this.menu.addItem((item) => {
+		// 	item
+		// 		.setIcon('chevrons-up-down')
+		// 		.setLabel('Expand all')
+		// 		.onClick((el) => console.log(el));
+		// });
 	}
 
 	onunload(): void {
