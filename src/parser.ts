@@ -1,6 +1,6 @@
 
-import { access, constants, readFile } from 'fs/promises';
 import { ArcJSONItem, ArcJSONSpace, ArcJSONWrapper, ArcSidebarItem, ArcSidebarModel, ArcSidebarSpace } from 'model';
+import { access, constants, readFile } from 'fs/promises';
 import { normalize } from 'path';
 
 export async function parseArcJson(jsonPath: string): Promise<ArcSidebarModel> {
@@ -60,6 +60,36 @@ function createItem(itemJson: ArcJSONItem, allItemsJson: ArcJSONItem[], parentIt
 	}, <ArcSidebarItem[]>[]);
 
 	return newItem;
+}
+
+export function filterItems(items: ArcSidebarItem[], key: keyof ArcSidebarItem, query: string | string[], exact: boolean = true) {
+	const matchingItems = (result: ArcSidebarItem[], item: ArcSidebarItem) => {
+		const queries: string[] = Array.isArray(query) ? query : [query];
+
+		if (exact) {
+			const isMatching = (query: string) => item[key] === query;
+			if (queries.some(isMatching)) {
+				result.push(item);
+				return result;
+			}
+		} else {
+			const isMatching = (query: string) => item[key]?.toString().contains(query);
+			if (queries.some(isMatching)) {
+				result.push(item);
+				return result;
+			}
+		}
+
+		const childItems = item.children.reduce(matchingItems, []);
+		if (childItems?.length) {
+			item.children = childItems;
+			result.push(item);
+		}
+
+		return result;
+	}
+
+	return items.reduce(matchingItems, []);
 }
 
 export async function validatePath(path: string): Promise<boolean> {
